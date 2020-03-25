@@ -127,3 +127,12 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Proprietary Data
+/data/calendar.csv
+/data/sales_train_validation.csv
+/data/sample_submission.csv
+/data/sell_prices.csv
+
+# Local VSCode settings
+.vscode/
