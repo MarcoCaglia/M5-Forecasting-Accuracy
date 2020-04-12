@@ -136,3 +136,6 @@ dmypy.json
 
 # Local VSCode settings
 .vscode/
+
+# Spark data
+metastore_db
