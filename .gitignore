@@ -145,3 +145,6 @@ metastore_db
 
 # Data
 *.csv
+
+# Competition data
+data/
