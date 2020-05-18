@@ -26,6 +26,9 @@ class DBGenerator:
 
         self._validate_generator()
 
+        if 'm5.db' in os.listdir(work_dir):
+            os.remove('m5.db')
+
         self.connection = sqlite3.connect(work_dir + 'm5.db')
 
     def create_db(self):
