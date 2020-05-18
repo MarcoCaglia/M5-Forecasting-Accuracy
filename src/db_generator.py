@@ -1,13 +1,14 @@
 """Module for DB creation for the M5-Project."""
 
 import logging
-import sqlite3
-from tqdm import tqdm
-from kaggle import api
-from zipfile import ZipFile
 import os
-import pandas as pd
+import sqlite3
 import types
+from zipfile import ZipFile
+
+import pandas as pd
+from kaggle import api
+from tqdm import tqdm
 
 COMP_NAME = 'm5-forecasting-accuracy'
 
