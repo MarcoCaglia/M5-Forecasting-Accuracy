@@ -7,6 +7,7 @@ from kaggle import api
 from zipfile import ZipFile
 import os
 import pandas as pd
+import types
 
 COMP_NAME = 'm5-forecasting-accuracy'
 
@@ -21,6 +22,8 @@ class DBGenerator:
         self.logger = logging.getLogger()
 
         self.logger.info('Initialized')
+
+        self._validate_generator()
 
         self.connection = sqlite3.connect(work_dir + 'm5.db')
 
@@ -57,6 +60,17 @@ class DBGenerator:
                 )
 
         self.logger.info(f'{table_name} table created...')
+
+    def _validate_generator(self):
+        self.logger.info('Validating generator dict...')
+        expected_keys = {'sales', 'calendar', 'price'}
+
+        assert expected_keys == set(self.generator)
+
+        for key in self.generator:
+            assert isinstance(self.generator[key], types.GeneratorType)
+
+        self.logger.info('Validation Successful!')
 
     @staticmethod
     def _split_and_melt(chunk):
@@ -109,7 +123,7 @@ class DBGenerator:
                 zipfile.open('calendar.csv'), chunksize=10000
             ),
             'price': pd.read_csv(
-                zipfile.open('sales_price.csv'), chunksize=10000
+                zipfile.open('sell_prices.csv'), chunksize=10000
             )
         }
 
@@ -131,7 +145,7 @@ class DBGenerator:
                 zipfile.open('calendar.csv'), chunksize=10000
             ),
             'price': pd.read_csv(
-                zipfile.open('sales_price.csv'), chunksize=10000
+                zipfile.open('sell_prices.csv'), chunksize=10000
             )
         }
 
@@ -150,7 +164,7 @@ class DBGenerator:
                 f'{work_dir}/calendar.csv', chunksize=10000
                 ),
             'price': pd.read_csv(
-                f'{work_dir}/sales_price.csv', chunksize=10000
+                f'{work_dir}/sell_prices.csv', chunksize=10000
                 )
         }
 
