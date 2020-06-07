@@ -3,7 +3,7 @@
 import logging
 import os
 import sqlite3
-import types
+from pandas.io.parsers import TextFileReader
 from zipfile import ZipFile
 
 import pandas as pd
@@ -20,7 +20,7 @@ class DBGenerator:
         """Initialize DBGenerator."""
         self.generator = generator_dict
 
-        self.logger = logging.getLogger()
+        self.logger = self._get_logger()
 
         self.logger.info('Initialized')
 
@@ -29,7 +29,7 @@ class DBGenerator:
         if 'm5.db' in os.listdir(work_dir):
             os.remove('m5.db')
 
-        self.connection = sqlite3.connect(work_dir + 'm5.db')
+        self.connection = sqlite3.connect(work_dir + '/m5.db')
 
     def create_db(self):
         """Create Database."""
@@ -41,7 +41,7 @@ class DBGenerator:
         self.logger.info('Creating info and sales table...')
 
         for chunk in tqdm(self.generator['sales']):
-            sales_table, info_table = self._split_table(chunk)
+            sales_table, info_table = self._split_and_melt(chunk)
 
             info_table.to_sql(
                 'info', if_exists='append', index=False, con=self.connection
@@ -72,7 +72,7 @@ class DBGenerator:
         assert expected_keys == set(self.generator)
 
         for key in self.generator:
-            assert isinstance(self.generator[key], types.GeneratorType)
+            assert isinstance(self.generator[key], TextFileReader)
 
         self.logger.info('Validation Successful!')
 
@@ -111,7 +111,7 @@ class DBGenerator:
         """Construct DB Generator with Kaggle API."""
         api.competition_download_cli(
             COMP_NAME,
-            work_dir
+            path=work_dir
         )
         zip_path = work_dir + '/' + COMP_NAME + '.zip'
         zipfile = ZipFile(zip_path)
