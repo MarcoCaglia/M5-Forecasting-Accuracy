@@ -4,23 +4,21 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-
-[packages]
-jupyter = "*"
-notebook = "*"
-jupyterlab = "*"
-numpy = "*"
-pandas = "*"
-matplotlib = "*"
-seaborn = "*"
-scikit-learn = "*"
-kaggle = "*"
-fastparquet = "*"
-pyarrow = "*"
+pytest = "*"
 pylama = "*"
-pycodestyle = "*"
 pep8 = "*"
 autopep8 = "*"
+pylint = "*"
+pycodestyle = "*"
+pydocstyle = "*"
+jupyterlab = "*"
+tqdm = "*"
+
+[packages]
+pandas = "*"
+vaex = "*"
+tables = "*"
+pyyaml = "*"
 
 [requires]
-python_version = "3.7"
+python_version = "3.8"
