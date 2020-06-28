@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "4ec29bb84df71c629dbee1ffb8e0568b09e3019ce2f32fd272b8af903de45a9f"
+            "sha256": "2d2c60d0afa8155bbec68d432acd356963b52bbed1072f646eb70b8ad8466825"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -1016,6 +1016,7 @@
                 "sha256:369356ca054962fbaef28f33840aea7b0b0728c52e45791babb9c71b481acd37",
                 "sha256:fb1f66d913c33b122b52a79f4907268e810b253d51e1671590a94afdf4ee3ca5"
             ],
+            "index": "pypi",
             "version": "==0.6.0"
         },
         "vaex-jupyter": {
