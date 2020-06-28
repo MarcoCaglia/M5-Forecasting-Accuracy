@@ -7,7 +7,7 @@ WORKDIR /home/usr/M5-Forecasting-Accuracy
 
 # Copy Files
 COPY ./config ./config
-COPY ./data/m5-forecasting-accuracy.zip m5-forecasting-accuracy.zip
+COPY ./local/m5-forecasting-accuracy.zip m5-forecasting-accuracy.zip
 COPY ./src ./src
 COPY requirements.txt requirements.txt
 

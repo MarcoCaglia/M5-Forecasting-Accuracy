@@ -3,6 +3,7 @@
 import os
 import shutil
 from zipfile import ZipFile
+import vaex
 
 import pandas as pd
 
@@ -59,37 +60,34 @@ class DMGenerator:
             info_data = info_data.append(chunk.loc[:, ['id'] + info_cols])
             sales_cols = [col for col in chunk.columns if 'd_' in col]
             sales = chunk.loc[:, ['id'] + sales_cols].melt(id_vars='id')
-            sales.to_hdf(
-                self.folder_path + '/' + DMGenerator.SALES_FOLDER
-                + f'/sales.h5',
-                key=f'index_{index}',
-                mode='a',
-                complevel=9
-                )
+            sales = vaex.from_pandas(sales)
+            sales.export_hdf5(
+                self.folder_path + '/' + DMGenerator.SALES_FOLDER +
+                f'/sales_{index}.hdf5'
+            )
         info_data.drop_duplicates().to_parquet(
             self.folder_path + '/' + DMGenerator.INFO_FOLDER +
             '/info.parquet.gzip', index=False
         )
+        self._consolidate_folder(DMGenerator.SALES_FOLDER)
 
     def _write_prices(self):
         for index, chunk in enumerate(self.price):
-            chunk.to_hdf(
+            price_sub_df = vaex.from_pandas(chunk)
+            price_sub_df.export_hdf5(
                 self.folder_path + '/' + DMGenerator.PRICES_FOLDER +
-                '/prices.h5',
-                key=f'index_{index}',
-                mode='a',
-                complevel=9
+                f'/price_{index}.hdf5'
             )
+        self._consolidate_folder(DMGenerator.PRICES_FOLDER)
 
     def _write_calendar(self):
         for index, chunk in enumerate(self.calendar):
-            chunk.to_hdf(
+            calendar_sub_df = vaex.from_pandas(chunk)
+            calendar_sub_df.export_hdf5(
                 self.folder_path + '/' + DMGenerator.CALENDAR_FOLDER +
-                '/calendar.h5',
-                key=f'index_{index}',
-                mode='a',
-                complevel=9
+                f'/calendar_{index}.hdf5'
             )
+        self._consolidate_folder(DMGenerator.CALENDAR_FOLDER)
 
     def _make_directories(self):
         current_content = os.listdir(self.folder_path)
@@ -119,6 +117,17 @@ class DMGenerator:
                 "Please make sure the directory exists before trying to"
                 "establish a data mart there."
                 )
+
+    def _consolidate_folder(self, folder):
+        abs_path = os.path.abspath(self.folder_path + '/' + folder)
+        contents = os.listdir(abs_path)
+        concatenated_df = vaex.open_many(
+            [str(abs_path + '/' + content) for content in contents]
+        )
+        _ = [os.remove(abs_path + '/' + content) for content in contents]
+        concatenated_df.export_hdf5(
+            abs_path + '/' + folder.lower() + '.hdf5',
+        )
 
     @staticmethod
     def _get_generators(zipfile_path):

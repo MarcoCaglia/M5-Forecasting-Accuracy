@@ -148,3 +148,4 @@ metastore_db
 
 # Competition data
 data/
+local/
